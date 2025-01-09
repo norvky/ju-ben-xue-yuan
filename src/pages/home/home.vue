@@ -22,6 +22,7 @@
 <script lang="ts" setup>
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
+import { taskLngLats } from './mock/taskLngLats'
 
 defineOptions({
   name: 'Home',
@@ -30,8 +31,11 @@ defineOptions({
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
+let map = null
+let myLocationMarker = null
+
 function initMap() {
-  const map = new maplibregl.Map({
+  map = new maplibregl.Map({
     container: 'map',
     style: {
       version: 8,
@@ -59,8 +63,26 @@ function initMap() {
     zoom: 17,
   })
 
-  map.on('click', (e) => {
-    console.log('A click event has occurred at ' + e.lngLat)
+  // const arr = []
+  // map.on('click', (res) => {
+  //   const { lngLat } = res
+  //   arr.push(lngLat)
+  //   console.log('arr: %o', arr)
+  // })
+
+  taskLngLats.forEach((lngLat) => {
+    new maplibregl.Marker({ color: 'red' }).setLngLat(lngLat).addTo(map)
+  })
+
+  myLocationMarker = new maplibregl.Marker()
+  uni.getLocation({
+    type: 'wgs84',
+    success: function (res) {
+      // const lngLat = [res.longitude, res.latitude]
+      const lngLat = [108.38025476582408, 22.762367277980474]
+      myLocationMarker.setLngLat(lngLat).addTo(map)
+      map.setCenter(lngLat)
+    },
   })
 }
 
