@@ -8,7 +8,8 @@ interface NavigateToOptions {
        "/pages/about/about" |
        "/pages/index/index" |
        "/pages/personal/personal" |
-       "/pages/screenplay/screenplay";
+       "/pages/screenplay/screenplay" |
+       "/pages/screenplay/widget";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

@@ -83,6 +83,10 @@
         "navigationStyle": "custom",
         "navigationBarTitleText": "剧本"
       }
+    },
+    {
+      "path": "pages/screenplay/widget",
+      "type": "page"
     }
   ],
   "subPackages": []

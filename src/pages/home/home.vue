@@ -70,8 +70,18 @@ function initMap() {
   //   console.log('arr: %o', arr)
   // })
 
-  taskLngLats.forEach((lngLat) => {
-    new maplibregl.Marker({ color: 'red' }).setLngLat(lngLat).addTo(map)
+  taskLngLats.forEach((item) => {
+    const marker = new maplibregl.Marker({ color: 'red' })
+      .setLngLat(item)
+      .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
+      .addTo(map)
+
+    const markerElement = marker.getElement()
+    markerElement.style.cursor = 'pointer'
+
+    markerElement.addEventListener('click', () => {
+      console.log('Marker clicked:', item.desc)
+    })
   })
 
   myLocationMarker = new maplibregl.Marker()
