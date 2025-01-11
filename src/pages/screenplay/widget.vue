@@ -15,7 +15,8 @@
       :src="imageSrc"
       alt="Widget"
       :style="{
-        ...imageSize,
+        width: imageSize.width,
+        height: imageSize.height,
         transition: 'transform 0.1s',
         transform: isShaking ? 'rotate(5deg)' : 'rotate(0deg)',
         opacity: isShaking ? 1 : 0.8,
@@ -25,7 +26,9 @@
 </template>
 
 <script lang="ts" setup>
-// 接收图片和位置 props
+import { ref } from 'vue'
+
+// 接收图片、尺寸和位置 props
 const props = defineProps({
   imageSrc: {
     type: String,
@@ -37,7 +40,7 @@ const props = defineProps({
   },
   imageSize: {
     type: Object,
-    default: () => ({ width: '100%', height: '100%' }),
+    required: true,
   },
 })
 
