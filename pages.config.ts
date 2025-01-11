@@ -32,12 +32,12 @@ export default defineUniPages({
         pagePath: 'pages/home/home',
         text: '首页',
       },
-      {
-        iconPath: 'static/tabbar/example.png',
-        selectedIconPath: 'static/tabbar/exampleHL.png',
-        pagePath: 'pages/screenplay/screenplay',
-        text: '剧本',
-      },
+      // {
+      //   iconPath: 'static/tabbar/example.png',
+      //   selectedIconPath: 'static/tabbar/exampleHL.png',
+      //   pagePath: 'pages/screenplay/screenplay',
+      //   text: '剧本',
+      // },
       {
         iconPath: 'static/tabbar/personal.png',
         selectedIconPath: 'static/tabbar/personalHL.png',

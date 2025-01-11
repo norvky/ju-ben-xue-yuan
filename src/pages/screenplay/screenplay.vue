@@ -21,10 +21,10 @@
       height: `calc(100vh - ${safeAreaInsets?.top}px - 50px)`,
     }"
   >
-    <view class="c-amber">
-      <view>{{ platform }}</view>
-      <view>{{ backgroundImageUrl }}</view>
+    <view v-if="props.taskData" class="c-amber">
+      <view>{{ JSON.stringify(props.taskData) }}</view>
     </view>
+
     <Widget :imageSrc="jubenji" :position="{ x: 100, y: 100 }" />
     <Widget :imageSrc="jubenfaxing" :position="{ x: 600, y: 200 }" />
     <Widget :imageSrc="tananguan" :position="{ x: 1000, y: 200 }" />
@@ -38,6 +38,13 @@ import Widget from './widget.vue'
 import jubenji from '@/static/images/screenplay/jubenji.png'
 import jubenfaxing from '@/static/images/screenplay/jubenfaxing.png'
 import tananguan from '@/static/images/screenplay/tananguan.png'
+
+const props = defineProps({
+  taskData: {
+    type: Object,
+    default: () => {},
+  },
+})
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets, platform } = uni.getSystemInfoSync()

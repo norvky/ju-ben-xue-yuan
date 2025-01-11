@@ -16,6 +16,29 @@
     }"
   >
     <view id="map" class="w-full h-full"></view>
+
+    <view
+      :style="{
+        position: 'absolute',
+        left: '0',
+        top: '0',
+        right: '0',
+        bottom: '0',
+        opacity: showScreenplay ? 1 : 0,
+        transform: showScreenplay ? 'scale(1)' : 'scale(0.5)',
+        transition: 'all 0.3s',
+        zIndex: showScreenplay ? 1 : -1,
+      }"
+    >
+      <wd-button
+        class="!absolute right-2 top-2 z-1 !bg-#7F776D !text-#3C1E1C"
+        type="icon"
+        icon="close"
+        @click="showScreenplay = !showScreenplay"
+      />
+
+      <Screenplay :task-data="taskData" />
+    </view>
   </view>
 </template>
 
@@ -23,6 +46,7 @@
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { taskLngLats } from './mock/taskLngLats'
+import Screenplay from '../screenplay/screenplay.vue'
 
 defineOptions({
   name: 'Home',
@@ -33,6 +57,8 @@ const { safeAreaInsets } = uni.getSystemInfoSync()
 
 let map = null
 let myLocationMarker = null
+const showScreenplay = ref(false)
+const taskData = ref(null)
 
 function initMap() {
   map = new maplibregl.Map({
@@ -63,24 +89,23 @@ function initMap() {
     zoom: 17,
   })
 
-  // const arr = []
   // map.on('click', (res) => {
-  //   const { lngLat } = res
-  //   arr.push(lngLat)
-  //   console.log('arr: %o', arr)
+  //   console.log('Map clicked:', res.lngLat)
+  //   showScreenplay.value = !showScreenplay.value
   // })
 
   taskLngLats.forEach((item) => {
     const marker = new maplibregl.Marker({ color: 'red' })
       .setLngLat(item)
-      .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
+      // .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
       .addTo(map)
 
     const markerElement = marker.getElement()
     markerElement.style.cursor = 'pointer'
 
     markerElement.addEventListener('click', () => {
-      console.log('Marker clicked:', item.desc)
+      taskData.value = item
+      showScreenplay.value = !showScreenplay.value
     })
   })
 
