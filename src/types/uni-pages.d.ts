@@ -6,6 +6,7 @@
 interface NavigateToOptions {
   url: "/pages/home/home" |
        "/pages/about/about" |
+       "/pages/home/TaskControl" |
        "/pages/index/index" |
        "/pages/personal/personal" |
        "/pages/screenplay/screenplay" |

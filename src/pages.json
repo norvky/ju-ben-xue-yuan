@@ -54,6 +54,10 @@
       }
     },
     {
+      "path": "pages/home/TaskControl",
+      "type": "page"
+    },
+    {
       "path": "pages/index/index",
       "type": "page",
       "style": {

@@ -17,6 +17,8 @@
   >
     <view id="map" class="w-full h-full"></view>
 
+    <TaskControl ref="taskControl" />
+
     <view
       :style="{
         position: 'absolute',
@@ -47,6 +49,7 @@ import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { taskLngLats } from './mock/taskLngLats'
 import Screenplay from '../screenplay/screenplay.vue'
+import TaskControl from './TaskControl.vue'
 
 defineOptions({
   name: 'Home',
@@ -59,6 +62,7 @@ let map = null
 let myLocationMarker = null
 const showScreenplay = ref(false)
 const taskData = ref(null)
+const taskControl = ref(null)
 
 function initMap() {
   map = new maplibregl.Map({
@@ -89,10 +93,11 @@ function initMap() {
     zoom: 17,
   })
 
-  // map.on('click', (res) => {
-  //   console.log('Map clicked:', res.lngLat)
-  //   showScreenplay.value = !showScreenplay.value
-  // })
+  taskControl.value.init(map, 'top-right')
+
+  map.on('click', (res) => {
+    console.log('Map clicked:', res.lngLat)
+  })
 
   taskLngLats.forEach((item) => {
     const marker = new maplibregl.Marker({ color: 'red' })
@@ -125,6 +130,9 @@ onLoad(() => {})
 
 onMounted(() => {
   initMap()
+})
+onBeforeUnmount(() => {
+  map.remove()
 })
 </script>
 
