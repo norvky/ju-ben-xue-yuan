@@ -43,6 +43,7 @@ export default ({ command, mode }) => {
     VITE_SHOW_SOURCEMAP,
     VITE_APP_PROXY,
     VITE_APP_PROXY_PREFIX,
+    VITE_AMAP_BASEURL,
   } = env
   console.log('环境变量 env -> ', env)
 
@@ -139,6 +140,11 @@ export default ({ command, mode }) => {
               target: VITE_SERVER_BASEURL,
               changeOrigin: true,
               rewrite: (path) => path.replace(new RegExp(`^${VITE_APP_PROXY_PREFIX}`), ''),
+            },
+            '/amap': {
+              target: VITE_AMAP_BASEURL,
+              changeOrigin: true,
+              rewrite: (path) => path.replace('/amap', ''),
             },
           }
         : undefined,

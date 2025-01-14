@@ -5,14 +5,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
 import controlIcon from '@/static/images/mapControls/taskControl.svg'
+
+const emit = defineEmits(['onClick'])
 
 // 控件的 DOM 元素
 const controlContainer = ref(null)
 
 function onClick() {
-  console.log('click: %o', controlContainer.value)
+  // console.log('click: %o', controlContainer.value)
+  emit('onClick')
 }
 
 // 控件的 onAdd 方法

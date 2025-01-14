@@ -17,7 +17,7 @@
   >
     <view id="map" class="w-full h-full"></view>
 
-    <TaskControl ref="taskControl" />
+    <TaskControl ref="taskControl" @onClick="showScreenplay = true" />
 
     <view
       :style="{
@@ -27,9 +27,10 @@
         right: '0',
         bottom: '0',
         opacity: showScreenplay ? 1 : 0,
-        transform: showScreenplay ? 'scale(1)' : 'scale(0.5)',
+        transform: showScreenplay ? 'scale(1)' : 'scale(0)',
+        transformOrigin: 'calc(100% - 34px) 34px',
         transition: 'all 0.3s',
-        zIndex: showScreenplay ? 1 : -1,
+        zIndex: showScreenplay ? 99 : -1,
       }"
     >
       <wd-button
@@ -50,6 +51,8 @@ import 'maplibre-gl/dist/maplibre-gl.css'
 import { taskLngLats } from './mock/taskLngLats'
 import Screenplay from '../screenplay/screenplay.vue'
 import TaskControl from './TaskControl.vue'
+import { getNewRoute } from '@/service/amap/index'
+import gcoord from 'gcoord'
 
 defineOptions({
   name: 'Home',
@@ -99,6 +102,76 @@ function initMap() {
     console.log('Map clicked:', res.lngLat)
   })
 
+  map.on('load', () => {
+    map.addSource('route-source', {
+      type: 'geojson',
+      data: {
+        type: 'FeatureCollection',
+        features: [], // 初始为空
+      },
+    })
+
+    // 添加路线图层
+    map.addLayer({
+      id: 'route-layer',
+      type: 'line',
+      source: 'route-source',
+      paint: {
+        'line-color': '#ff0000', // 线的颜色
+        'line-width': 3, // 线的宽度
+      },
+    })
+  })
+
+  // 更新路线的函数
+  const updateRoute = (route) => {
+    // 将高德地图的 GCJ-02 坐标转换为 WGS84 坐标
+    const routeGeoJSON = {
+      type: 'FeatureCollection',
+      features: route.paths[0].steps.map((step) => {
+        const coordinates = step.polyline.split(';').map((point) => {
+          const [lng, lat] = point.split(',').map(parseFloat)
+          return gcoord.transform([lng, lat], gcoord.GCJ02, gcoord.WGS84)
+        })
+        return {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates,
+          },
+          properties: {
+            instruction: step.instruction,
+            distance: step.step_distance,
+          },
+        }
+      }),
+    }
+
+    // 更新已有的数据源
+    const routeSource = map.getSource('route-source')
+    if (routeSource) {
+      routeSource.setData(routeGeoJSON)
+    }
+  }
+
+  function openAmap(lat, lng) {
+    const url = `androidamap://viewMap?sourceApplication=myApp&lat=${lat}&lon=${lng}&dev=0`
+
+    // 创建隐藏的 <a> 标签
+    const link = document.createElement('a')
+    link.href = url
+    link.style.display = 'none'
+    document.body.appendChild(link)
+
+    // 触发点击
+    link.click()
+
+    // 移除 <a> 标签
+    setTimeout(function () {
+      document.body.removeChild(link)
+    }, 100)
+  }
+
   taskLngLats.forEach((item) => {
     const marker = new maplibregl.Marker({ color: 'red' })
       .setLngLat(item)
@@ -110,7 +183,26 @@ function initMap() {
 
     markerElement.addEventListener('click', () => {
       taskData.value = item
-      showScreenplay.value = !showScreenplay.value
+      // showScreenplay.value = !showScreenplay.value
+
+      const origin = [108.38025476582408, 22.762367277980474] // 起点
+      const destination = [item.lng, item.lat] // 终点
+
+      const originGCJ02 = gcoord.transform(origin, gcoord.WGS84, gcoord.GCJ02)
+      const destinationGCJ02 = gcoord.transform(destination, gcoord.WGS84, gcoord.GCJ02)
+
+      // openAmap(destinationGCJ02[1], destinationGCJ02[0])
+
+      getNewRoute({
+        origin: originGCJ02.join(','),
+        destination: destinationGCJ02.join(','),
+      }).then((res) => {
+        const { route } = res
+        console.log('res - data', route)
+
+        // 绘制路线
+        updateRoute(route)
+      })
     })
   })
 
