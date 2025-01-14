@@ -16,7 +16,23 @@
       <wd-img :width="100" :height="100" round :src="avatarImg" />
     </view>
 
-    <view>徽章数：8</view>
+    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
+      <view class="text-center text-xl">徽章展示</view>
+
+      <view class="mt-2 grid grid-cols-6 gap-2">
+        <view v-for="i in 15" :key="i" class="flex justify-center">
+          <wd-img :width="50" :height="50" round :src="avatarImg" />
+        </view>
+      </view>
+    </view>
+
+    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
+      <view class="text-center text-xl">随便展示1</view>
+    </view>
+
+    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
+      <view class="text-center text-xl">随便展示2</view>
+    </view>
   </view>
 </template>
 
