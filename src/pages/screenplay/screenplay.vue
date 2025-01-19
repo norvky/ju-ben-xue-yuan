@@ -161,13 +161,12 @@ const calculateWidgetPositions = () => {
   })
 }
 
-// 初始化挂件位置
-onMounted(() => {
-  calculateWidgetPositions()
-})
-
 // 监听屏幕宽度变化
 onMounted(() => {
+  nextTick(() => {
+    calculateWidgetPositions()
+  })
+
   window.addEventListener('resize', calculateWidgetPositions)
 })
 

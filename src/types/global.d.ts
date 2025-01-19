@@ -15,6 +15,8 @@ declare const __UNI_PLATFORM__:
 
 declare const __VITE_APP_PROXY__: 'true' | 'false'
 
+declare const jWeixin: typeof import('jweixin')
+
 declare namespace JSX {
   interface IntrinsicElements {
     template: any

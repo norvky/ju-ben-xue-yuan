@@ -40,6 +40,24 @@ import avatarImg from '@/static/logo.jpg'
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
+
+const timestamp = Date.now()
+jWeixin.config({
+  debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+  appId: 'wx615c43e0d1964b40', // 必填，公众号的唯一标识
+  timestamp, // 必填，生成签名的时间戳
+  nonceStr: '', // 必填，生成签名的随机串
+  signature: '', // 必填，签名
+  jsApiList: ['scanQRCode'], // 必填，需要使用的JS接口列表
+})
+
+jWeixin.ready(() => {
+  console.log('jWeixin.ready: %o')
+})
+
+jWeixin.error((res) => {
+  console.log('jWeixin.error: %o', res)
+})
 </script>
 
 <style lang="scss" scoped>
