@@ -16,6 +16,9 @@
       <wd-img :width="100" :height="100" round :src="avatarImg" />
     </view>
 
+    <view>名称：XXX</view>
+    <view>手机号：1XXXXXXXXXX</view>
+
     <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
       <view class="text-center text-xl">徽章展示</view>
 
@@ -27,11 +30,7 @@
     </view>
 
     <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
-      <view class="text-center text-xl">随便展示1</view>
-    </view>
-
-    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
-      <view class="text-center text-xl">随便展示2</view>
+      <view class="text-center text-xl">奖励展示</view>
     </view>
   </view>
 </template>

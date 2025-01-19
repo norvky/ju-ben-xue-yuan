@@ -9,7 +9,7 @@
 
 <template>
   <view
-    class="bg-white overflow-hidden"
+    class="relative bg-white overflow-hidden"
     :style="{
       marginTop: safeAreaInsets?.top + 'px',
       height: `calc(100vh - ${safeAreaInsets?.top}px - 50px)`,
@@ -17,7 +17,10 @@
   >
     <view id="map" class="w-full h-full"></view>
 
+    <PersonalControl ref="personalControl" @onClick="showScreenplay = true" />
     <TaskControl ref="taskControl" @onClick="showScreenplay = true" />
+
+    <ScanControl />
 
     <view
       :style="{
@@ -50,7 +53,9 @@ import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { taskLngLats } from './mock/taskLngLats'
 import Screenplay from '../screenplay/screenplay.vue'
-import TaskControl from './TaskControl.vue'
+import PersonalControl from './mapControls/PersonalControl/index.vue'
+import TaskControl from './mapControls/TaskControl/index.vue'
+import ScanControl from './mapControls/ScanControl/index.vue'
 import { getNewRoute } from '@/service/amap/index'
 import gcoord from 'gcoord'
 
@@ -66,6 +71,7 @@ let myLocationMarker = null
 const showScreenplay = ref(false)
 const taskData = ref(null)
 const taskControl = ref(null)
+const personalControl = ref(null)
 
 function initMap() {
   map = new maplibregl.Map({
@@ -96,6 +102,7 @@ function initMap() {
     zoom: 17,
   })
 
+  personalControl.value.init(map, 'top-right')
   taskControl.value.init(map, 'top-right')
 
   map.on('click', (res) => {
@@ -218,7 +225,9 @@ function initMap() {
   })
 }
 
-onLoad(() => {})
+// onLoad(() => {
+//   uni.hideTabBar()
+// })
 
 onMounted(() => {
   initMap()

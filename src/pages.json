@@ -39,6 +39,15 @@
   },
   "pages": [
     {
+      "path": "pages/redirectPage/redirectPage",
+      "type": "home",
+      "layout": "default",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
+      }
+    },
+    {
       "path": "pages/home/home",
       "type": "home",
       "style": {
@@ -54,15 +63,20 @@
       }
     },
     {
-      "path": "pages/home/TaskControl",
-      "type": "page"
-    },
-    {
       "path": "pages/index/index",
       "type": "page",
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/login/login",
+      "type": "page",
+      "layout": "default",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": ""
       }
     },
     {
@@ -84,6 +98,18 @@
     },
     {
       "path": "pages/screenplay/widget",
+      "type": "page"
+    },
+    {
+      "path": "pages/home/mapControls/PersonalControl/index",
+      "type": "page"
+    },
+    {
+      "path": "pages/home/mapControls/ScanControl/index",
+      "type": "page"
+    },
+    {
+      "path": "pages/home/mapControls/TaskControl/index",
       "type": "page"
     }
   ],
