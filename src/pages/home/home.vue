@@ -4,6 +4,7 @@
     navigationStyle: 'custom',
     navigationBarTitleText: '剧本学院',
   },
+  needLogin: true,
 }
 </route>
 
@@ -12,7 +13,7 @@
     class="relative bg-white overflow-hidden"
     :style="{
       marginTop: safeAreaInsets?.top + 'px',
-      height: `calc(100vh - ${safeAreaInsets?.top}px - 50px)`,
+      height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px - 50px)`,
     }"
   >
     <view id="map" class="w-full h-full"></view>
