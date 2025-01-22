@@ -12,6 +12,8 @@ interface NavigateToOptions {
        "/pages/personal/personal" |
        "/pages/screenplay/screenplay" |
        "/pages/screenplay/widget" |
+       "/pages/home/mapControls/ExchangeBadgesControl/index" |
+       "/pages/home/mapControls/LookAroundControl/index" |
        "/pages/home/mapControls/PersonalControl/index" |
        "/pages/home/mapControls/ScanControl/index" |
        "/pages/home/mapControls/TaskControl/index";

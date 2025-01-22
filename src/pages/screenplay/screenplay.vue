@@ -60,26 +60,27 @@ const { safeAreaInsets, platform, windowWidth, windowHeight } = uni.getSystemInf
 const backgroundImageUrl = ['ios', 'android'].includes(platform) ? mbg : bg
 
 // 挂件数据
-const widgets = ref([
+const widgets = ref([])
+const widgetsDefault = [
   {
     imageSrc: jubenji,
     imageSize: { web: { width: '30%', height: 'auto' }, mobile: { width: '65vw', height: 'auto' } },
     position: { x: 0, y: 0 },
     calculatedSize: { width: '0px', height: '0px' },
   },
-  {
-    imageSrc: jubenfaxing,
-    imageSize: { web: { width: '20%', height: 'auto' }, mobile: { width: '25vw', height: 'auto' } },
-    position: { x: 0, y: 0 },
-    calculatedSize: { width: '0px', height: '0px' },
-  },
+  // {
+  //   imageSrc: jubenfaxing,
+  //   imageSize: { web: { width: '20%', height: 'auto' }, mobile: { width: '25vw', height: 'auto' } },
+  //   position: { x: 0, y: 0 },
+  //   calculatedSize: { width: '0px', height: '0px' },
+  // },
   {
     imageSrc: tananguan,
     imageSize: { web: { width: '35%', height: 'auto' }, mobile: { width: '55vw', height: 'auto' } },
     position: { x: 0, y: 0 },
     calculatedSize: { width: '0px', height: '0px' },
   },
-])
+]
 
 // 计算百分比宽高
 const calculatePercentageSize = (value: string, screenSize: number) => {
@@ -102,17 +103,21 @@ const calculateWidgetPositions = () => {
   let y = margin
   let maxHeightInRow = 0 // 当前行最大高度
 
-  widgets.value = widgets.value.map((widget) => {
+  widgets.value = widgetsDefault.map((widget) => {
     const { web, mobile } = widget.imageSize
     const widgetWidth = isMobile
       ? calculatePercentageSize(mobile.width, screenWidth)
       : calculatePercentageSize(web.width, screenWidth)
 
     // 动态计算高度（保持图片宽高比）
+    // TODO: 无效计算，需要重构
     const img = new Image()
     img.src = widget.imageSrc
+    console.log('img: %o', img.width)
     const aspectRatio = img.width / img.height // 图片宽高比
     const widgetHeight = widgetWidth / aspectRatio
+
+    console.log('widgetHeight: %o', widgetHeight)
 
     const position = { x, y }
 

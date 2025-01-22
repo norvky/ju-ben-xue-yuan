@@ -103,6 +103,14 @@
       "type": "page"
     },
     {
+      "path": "pages/home/mapControls/ExchangeBadgesControl/index",
+      "type": "page"
+    },
+    {
+      "path": "pages/home/mapControls/LookAroundControl/index",
+      "type": "page"
+    },
+    {
       "path": "pages/home/mapControls/PersonalControl/index",
       "type": "page"
     },

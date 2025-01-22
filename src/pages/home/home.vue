@@ -21,7 +21,9 @@
     <PersonalControl ref="personalControl" @onClick="showScreenplay = true" />
     <TaskControl ref="taskControl" @onClick="showScreenplay = true" />
 
+    <ExchangeBadgesControl />
     <ScanControl />
+    <LookAroundControl />
 
     <view
       :style="{
@@ -56,7 +58,9 @@ import { taskLngLats } from './mock/taskLngLats'
 import Screenplay from '../screenplay/screenplay.vue'
 import PersonalControl from './mapControls/PersonalControl/index.vue'
 import TaskControl from './mapControls/TaskControl/index.vue'
+import ExchangeBadgesControl from './mapControls/ExchangeBadgesControl/index.vue'
 import ScanControl from './mapControls/ScanControl/index.vue'
+import LookAroundControl from './mapControls/LookAroundControl/index.vue'
 import { getNewRoute } from '@/service/amap/index'
 import gcoord from 'gcoord'
 
@@ -101,6 +105,7 @@ function initMap() {
     },
     center: [108.38025476582408, 22.762367277980474],
     zoom: 17,
+    attributionControl: false, // 禁用版权控件
   })
 
   personalControl.value.init(map, 'top-right')
@@ -180,11 +185,17 @@ function initMap() {
     }, 100)
   }
 
-  taskLngLats.forEach((item) => {
-    const marker = new maplibregl.Marker({ color: 'red' })
-      .setLngLat(item)
-      // .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
-      .addTo(map)
+  taskLngLats.forEach(async (item) => {
+    let marker = null
+
+    if ('icon' in item) {
+      marker = await createCustomMarker(item, map)
+    } else {
+      marker = new maplibregl.Marker({ color: 'red' })
+        .setLngLat(item)
+        // .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
+        .addTo(map)
+    }
 
     const markerElement = marker.getElement()
     markerElement.style.cursor = 'pointer'
@@ -224,6 +235,25 @@ function initMap() {
       map.setCenter(lngLat)
     },
   })
+}
+
+async function createCustomMarker(item, map) {
+  const el = document.createElement('div')
+
+  const response = await fetch(item.icon)
+  const svgContent = await response.text()
+
+  // 插入到 div 中
+  el.innerHTML = svgContent
+
+  // 获取 SVG 元素
+  const svgElement = el.querySelector('svg')
+  if (svgElement) {
+    svgElement.style.width = `${item.iconSize[0]}px`
+    svgElement.style.height = `${item.iconSize[1]}px`
+  }
+
+  return new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).addTo(map)
 }
 
 // onLoad(() => {
