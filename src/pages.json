@@ -14,14 +14,15 @@
     }
   },
   "tabBar": {
+    "custom": true,
     "color": "#999999",
     "selectedColor": "#018d71",
     "backgroundColor": "#F8F8F8",
     "borderStyle": "black",
-    "height": "50px",
-    "fontSize": "10px",
-    "iconWidth": "24px",
-    "spacing": "3px",
+    "height": "0px",
+    "fontSize": "0px",
+    "iconWidth": "0px",
+    "spacing": "0px",
     "list": [
       {
         "iconPath": "static/tabbar/home.png",

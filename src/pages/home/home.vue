@@ -13,7 +13,7 @@
     class="relative bg-white overflow-hidden"
     :style="{
       marginTop: safeAreaInsets?.top + 'px',
-      height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px - 50px)`,
+      height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px)`,
     }"
   >
     <view id="map" class="w-full h-full"></view>
@@ -67,6 +67,8 @@ import gcoord from 'gcoord'
 defineOptions({
   name: 'Home',
 })
+
+uni.hideTabBar()
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
