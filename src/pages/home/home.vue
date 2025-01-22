@@ -4,7 +4,6 @@
     navigationStyle: 'custom',
     navigationBarTitleText: '剧本学院',
   },
-  needLogin: true,
 }
 </route>
 

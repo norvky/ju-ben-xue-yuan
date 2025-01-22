@@ -4,7 +4,6 @@
   style: {
     navigationBarTitleText: '个人中心',
   },
-  needLogin: true,
 }
 </route>
 

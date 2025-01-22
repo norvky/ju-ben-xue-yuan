@@ -54,8 +54,7 @@
       "style": {
         "navigationStyle": "custom",
         "navigationBarTitleText": "剧本学院"
-      },
-      "needLogin": true
+      }
     },
     {
       "path": "pages/about/about",
@@ -87,8 +86,7 @@
       "layout": "default",
       "style": {
         "navigationBarTitleText": "个人中心"
-      },
-      "needLogin": true
+      }
     },
     {
       "path": "pages/screenplay/screenplay",
