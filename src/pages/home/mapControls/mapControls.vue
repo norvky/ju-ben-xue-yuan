@@ -19,7 +19,7 @@ import ExchangeBadgesControl from './ExchangeBadgesControl/index.vue'
 import ScanControl from './ScanControl/index.vue'
 import LookAroundControl from './LookAroundControl/index.vue'
 
-const { getMyMap, mapReady } = inject('home')
+const { getMyMap, mapReady } = inject('homeData')
 
 let myMap = null
 const personalControl = ref(null)
