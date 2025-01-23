@@ -12,25 +12,37 @@
     class="bg-white overflow-hidden pt-2 px-4 min-h-screen"
     :style="{ marginTop: safeAreaInsets?.top + 'px' }"
   >
-    <view class="center">
-      <wd-img :width="100" :height="100" round :src="avatarImg" />
-    </view>
+    <view class="">
+      <view class="center">
+        <wd-img :width="100" :height="100" round :src="avatarImg" />
+      </view>
 
-    <view>名称：{{ userStore?.userInfo?.nickname || '-' }}</view>
-    <view>手机号：{{ userStore?.userInfo?.phone || '-' }}</view>
+      <view>名称：{{ userStore?.userInfo?.nickname || '-' }}</view>
+      <view>手机号：{{ userStore?.userInfo?.phone || '-' }}</view>
 
-    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
-      <view class="text-center text-xl">徽章展示</view>
+      <view class="b-rounded" style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #ccc">
+        <view class="text-center text-xl">徽章展示</view>
 
-      <view class="mt-2 grid grid-cols-6 gap-2">
-        <view v-for="i in 15" :key="i" class="flex justify-center">
-          <wd-img :width="50" :height="50" round :src="logo" />
+        <view class="mt-2 grid grid-cols-6 gap-2">
+          <view v-for="i in 15" :key="i" class="flex justify-center">
+            <wd-img :width="50" :height="50" round :src="logo" />
+          </view>
+        </view>
+      </view>
+
+      <view class="b-rounded" style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #ccc">
+        <view class="text-center text-xl">奖励展示</view>
+
+        <view class="mt-2 grid grid-cols-1 gap-2">
+          <view v-for="i in 5" :key="i" class="flex bg-#eee">
+            <wd-img :width="50" :height="50" round :src="logo" />
+          </view>
         </view>
       </view>
     </view>
 
-    <view style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #000">
-      <view class="text-center text-xl">奖励展示</view>
+    <view class="mt-4 p-2 flex justify-center">
+      <wd-button type="error" @click="loginOut">退出登录</wd-button>
     </view>
   </view>
 </template>
@@ -46,6 +58,16 @@ const userStore = useUserStore()
 const avatarImg = computed(() => {
   return userStore?.userInfo?.avatar || logo
 })
+
+function loginOut() {
+  userStore.reset()
+
+  // 提示
+  uni.showToast({
+    title: '退出登录成功',
+    icon: 'success',
+  })
+}
 
 const timestamp = Date.now()
 jWeixin.config({
