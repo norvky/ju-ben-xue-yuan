@@ -9,7 +9,7 @@
 
 <template>
   <view
-    class="bg-white overflow-hidden pt-2 px-4"
+    class="bg-white overflow-hidden pt-2 px-4 min-h-screen"
     :style="{ marginTop: safeAreaInsets?.top + 'px' }"
   >
     <view class="center">

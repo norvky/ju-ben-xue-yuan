@@ -7,19 +7,41 @@
       ></path>
     </svg>
   </div>
+
+  <view
+    :style="{
+      position: 'absolute',
+      left: '0',
+      top: '0',
+      right: '0',
+      bottom: '0',
+      opacity: showPage ? 1 : 0,
+      transform: showPage ? 'scale(1)' : 'scale(0)',
+      transformOrigin: 'calc(100% - 34px) 34px',
+      transition: 'all 0.3s',
+      zIndex: showPage ? 99 : -1,
+    }"
+  >
+    <wd-button
+      class="!absolute right-2 top-2 z-1 !bg-#7F776D !text-#3C1E1C"
+      type="icon"
+      icon="close"
+      @click="showPage = false"
+    />
+
+    <PersonalPage />
+  </view>
 </template>
 
 <script setup name="PersonalControl">
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
+import PersonalPage from '@/pages/personal/personal.vue'
 
-const emit = defineEmits(['onClick'])
-
-// 控件的 DOM 元素
 const controlContainer = ref(null)
+const showPage = ref(false)
 
 function onClick() {
-  // console.log('click: %o', controlContainer.value)
-  emit('onClick')
+  showPage.value = !showPage.value
 }
 
 // 控件的 onAdd 方法
@@ -35,10 +57,12 @@ const onRemove = () => {
 }
 
 // 暴露 init 方法
-const init = (map, position = 'top-right') => {
-  if (map) {
-    map.addControl({ onAdd, onRemove }, position)
+const init = (myMap, position = 'top-right') => {
+  if (myMap) {
+    myMap.addControl({ onAdd, onRemove }, position)
     console.log('地图控件初始化完成: PersonalControl')
+  } else {
+    console.warn('地图对象不存在')
   }
 }
 

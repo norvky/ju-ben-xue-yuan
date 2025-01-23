@@ -102,6 +102,10 @@
       "type": "page"
     },
     {
+      "path": "pages/home/mapControls/mapControls",
+      "type": "page"
+    },
+    {
       "path": "pages/home/mapControls/ExchangeBadgesControl/index",
       "type": "page"
     },

@@ -15,51 +15,17 @@
       height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px)`,
     }"
   >
-    <view id="map" class="w-full h-full"></view>
+    <view id="mapContainer" class="w-full h-full"></view>
 
-    <PersonalControl ref="personalControl" @onClick="showScreenplay = true" />
-    <TaskControl ref="taskControl" @onClick="showScreenplay = true" />
-
-    <ExchangeBadgesControl />
-    <ScanControl />
-    <LookAroundControl />
-
-    <view
-      :style="{
-        position: 'absolute',
-        left: '0',
-        top: '0',
-        right: '0',
-        bottom: '0',
-        opacity: showScreenplay ? 1 : 0,
-        transform: showScreenplay ? 'scale(1)' : 'scale(0)',
-        transformOrigin: 'calc(100% - 34px) 34px',
-        transition: 'all 0.3s',
-        zIndex: showScreenplay ? 99 : -1,
-      }"
-    >
-      <wd-button
-        class="!absolute right-2 top-2 z-1 !bg-#7F776D !text-#3C1E1C"
-        type="icon"
-        icon="close"
-        @click="showScreenplay = !showScreenplay"
-      />
-
-      <Screenplay :task-data="taskData" />
-    </view>
+    <mapControls />
   </view>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
 import { taskLngLats } from './mock/taskLngLats'
-import Screenplay from '../screenplay/screenplay.vue'
-import PersonalControl from './mapControls/PersonalControl/index.vue'
-import TaskControl from './mapControls/TaskControl/index.vue'
-import ExchangeBadgesControl from './mapControls/ExchangeBadgesControl/index.vue'
-import ScanControl from './mapControls/ScanControl/index.vue'
-import LookAroundControl from './mapControls/LookAroundControl/index.vue'
+import mapControls from './mapControls/mapControls.vue'
 import { getNewRoute } from '@/service/amap/index'
 import gcoord from 'gcoord'
 
@@ -72,16 +38,13 @@ uni.hideTabBar()
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
-let map = null
+let myMap = null
+const mapReady = ref(false)
 let myLocationMarker = null
-const showScreenplay = ref(false)
-const taskData = ref(null)
-const taskControl = ref(null)
-const personalControl = ref(null)
 
 function initMap() {
-  map = new maplibregl.Map({
-    container: 'map',
+  myMap = new maplibregl.Map({
+    container: 'mapContainer',
     style: {
       version: 8,
       sources: {
@@ -109,15 +72,13 @@ function initMap() {
     attributionControl: false, // 禁用版权控件
   })
 
-  personalControl.value.init(map, 'top-right')
-  taskControl.value.init(map, 'top-right')
-
-  map.on('click', (res) => {
-    console.log('Map clicked:', res.lngLat)
+  myMap.on('click', (res) => {
+    console.log('myMap clicked:', res.lngLat)
   })
 
-  map.on('load', () => {
-    map.addSource('route-source', {
+  myMap.on('load', () => {
+    mapReady.value = true
+    myMap.addSource('route-source', {
       type: 'geojson',
       data: {
         type: 'FeatureCollection',
@@ -126,7 +87,7 @@ function initMap() {
     })
 
     // 添加路线图层
-    map.addLayer({
+    myMap.addLayer({
       id: 'route-layer',
       type: 'line',
       source: 'route-source',
@@ -162,7 +123,7 @@ function initMap() {
     }
 
     // 更新已有的数据源
-    const routeSource = map.getSource('route-source')
+    const routeSource = myMap.getSource('route-source')
     if (routeSource) {
       routeSource.setData(routeGeoJSON)
     }
@@ -190,21 +151,18 @@ function initMap() {
     let marker = null
 
     if ('icon' in item) {
-      marker = await createCustomMarker(item, map)
+      marker = await createCustomMarker(item, myMap)
     } else {
       marker = new maplibregl.Marker({ color: 'red' })
         .setLngLat(item)
         // .setPopup(new maplibregl.Popup({ offset: 25 }).setText(item.desc))
-        .addTo(map)
+        .addTo(myMap)
     }
 
     const markerElement = marker.getElement()
     markerElement.style.cursor = 'pointer'
 
     markerElement.addEventListener('click', () => {
-      taskData.value = item
-      // showScreenplay.value = !showScreenplay.value
-
       const origin = [108.38025476582408, 22.762367277980474] // 起点
       const destination = [item.lng, item.lat] // 终点
 
@@ -232,13 +190,13 @@ function initMap() {
     success: function (res) {
       // const lngLat = [res.longitude, res.latitude]
       const lngLat = [108.38025476582408, 22.762367277980474]
-      myLocationMarker.setLngLat(lngLat).addTo(map)
-      map.setCenter(lngLat)
+      myLocationMarker.setLngLat(lngLat).addTo(myMap)
+      myMap.setCenter(lngLat)
     },
   })
 }
 
-async function createCustomMarker(item, map) {
+async function createCustomMarker(item, myMap) {
   const el = document.createElement('div')
 
   const response = await fetch(item.icon)
@@ -254,19 +212,24 @@ async function createCustomMarker(item, map) {
     svgElement.style.height = `${item.iconSize[1]}px`
   }
 
-  return new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).addTo(map)
+  return new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).addTo(myMap)
 }
 
-// onLoad(() => {
-//   uni.hideTabBar()
-// })
+function getMyMap() {
+  return myMap
+}
+function removeMyMap() {
+  myMap && myMap.remove()
+}
 
 onMounted(() => {
   initMap()
 })
 onBeforeUnmount(() => {
-  map.remove()
+  removeMyMap()
 })
+
+provide('home', { getMyMap, mapReady })
 </script>
 
 <style lang="scss" scoped>

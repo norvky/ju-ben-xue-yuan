@@ -7,19 +7,41 @@
       ></path>
     </svg>
   </div>
+
+  <view
+    :style="{
+      position: 'absolute',
+      left: '0',
+      top: '0',
+      right: '0',
+      bottom: '0',
+      opacity: showScreenplay ? 1 : 0,
+      transform: showScreenplay ? 'scale(1)' : 'scale(0)',
+      transformOrigin: 'calc(100% - 34px) 34px',
+      transition: 'all 0.3s',
+      zIndex: showScreenplay ? 99 : -1,
+    }"
+  >
+    <wd-button
+      class="!absolute right-2 top-2 z-1 !bg-#7F776D !text-#3C1E1C"
+      type="icon"
+      icon="close"
+      @click="showScreenplay = false"
+    />
+
+    <Screenplay />
+  </view>
 </template>
 
 <script setup name="TaskControl">
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
+import Screenplay from '@/pages/screenplay/screenplay.vue'
 
-const emit = defineEmits(['onClick'])
-
-// 控件的 DOM 元素
 const controlContainer = ref(null)
+const showScreenplay = ref(false)
 
 function onClick() {
-  // console.log('click: %o', controlContainer.value)
-  emit('onClick')
+  showScreenplay.value = !showScreenplay.value
 }
 
 // 控件的 onAdd 方法
@@ -39,6 +61,8 @@ const init = (map, position = 'top-right') => {
   if (map) {
     map.addControl({ onAdd, onRemove }, position)
     console.log('地图控件初始化完成: TaskControl')
+  } else {
+    console.warn('地图对象不存在')
   }
 }
 

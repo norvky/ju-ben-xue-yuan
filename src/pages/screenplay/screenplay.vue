@@ -18,7 +18,7 @@
       backgroundSize: 'cover',
       backgroundRepeat: 'no-repeat',
       backgroundPosition: 'center',
-      height: `calc(100vh - ${safeAreaInsets?.top}px - 50px)`,
+      height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px)`,
       overflow: 'auto',
     }"
   >
