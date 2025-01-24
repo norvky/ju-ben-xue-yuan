@@ -38,9 +38,11 @@ import mapControls from './mapControls/mapControls.vue'
 import LoginPage from '@/pages/login/login.vue'
 import { initMap, createMarker } from '@/utils/maplibregl/index'
 import { useUserStore } from '@/store'
+import { getTkCfg } from '@/service/login'
 
 uni.hideTabBar()
 
+const { VITE_WX_APPID } = import.meta.env
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const userStore = useUserStore()
 
@@ -57,14 +59,6 @@ function removeMyMap() {
 
 // 配置微信 JS SDK
 const wxIsReady = ref(false)
-wx.config({
-  debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-  appId: 'wx615c43e0d1964b40', // 必填，公众号的唯一标识
-  nonceStr: '99f13f50-bf41-481f-9a4d-a833f76fe6ee', // 必填，生成签名的随机串
-  timestamp: 1737693125, // 必填，生成签名的时间戳
-  signature: '6a81223817f88d786f600520a86a609a6afcbc70', // 必填，签名
-  jsApiList: ['getLocation', 'scanQRCode'], // 必填，需要使用的JS接口列表
-})
 wx.ready(() => {
   wxIsReady.value = true
   console.log('Weixin JS SDK Ready')
@@ -72,28 +66,39 @@ wx.ready(() => {
 wx.error((res) => {
   console.error('Weixin JS SDK Error: %o', res)
 })
-// watch(
-//   () => wxIsReady.value,
-//   async (newValue) => {
-//     newValue &&
-//       wx.getLocation({
-//         type: 'wgs84',
-//         success: (res) => {
-//           console.log('wx.getLocation: %o', res)
-//           setTimeout(() => {
-//             const marker = new maplibregl.Marker()
-//               .setLngLat({ lng: res.longitude, lat: res.latitude })
-//               .addTo(myMap)
+async function initWXJSSDK() {
+  const url = window.location.href.replace(window.location.hash, '')
+  const { code, data } = await getTkCfg({ url })
+  if (code !== 200) {
+    return
+  }
 
-//             myMap.setCenter({ lng: res.longitude, lat: res.latitude })
-//           }, 1000)
-//         },
-//         fail: (res) => {
-//           console.log('wx.getLocation fail: %o', res)
-//         },
-//       })
-//   },
-// )
+  wx.config({
+    debug: false,
+    appId: VITE_WX_APPID,
+    nonceStr: data.nonceStr,
+    timestamp: data.timestamp,
+    signature: data.signature,
+    jsApiList: ['getLocation', 'scanQRCode'],
+  })
+}
+
+initWXJSSDK()
+
+onShow(() => {
+  const search = window.location.search
+  if (search) {
+    const params = new URLSearchParams(search)
+    const code = params.get('code')
+    userStore.setWXCode(code)
+
+    const fullUrl = window.location.href
+    const newUrl = fullUrl.replace(search, '')
+    window.history.replaceState({}, document.title, newUrl)
+
+    showLoginPage.value = true
+  }
+})
 
 onMounted(() => {
   myMap = initMap('mapContainer')
