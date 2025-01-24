@@ -18,6 +18,16 @@
     <view id="mapContainer" class="w-full h-full"></view>
 
     <mapControls />
+
+    <wd-popup
+      v-model="showLoginPage"
+      custom-style="border-radius:32rpx;"
+      @close="showLoginPage = false"
+    >
+      <view class="w-80vw bg-#fff overflow-hidden">
+        <LoginPage v-if="showLoginPage" />
+      </view>
+    </wd-popup>
   </view>
 </template>
 
@@ -25,12 +35,16 @@
 import wx from 'weixin-js-sdk'
 import { taskLngLats } from './mock/taskLngLats'
 import mapControls from './mapControls/mapControls.vue'
+import LoginPage from '@/pages/login/login.vue'
 import { initMap, createMarker } from '@/utils/maplibregl/index'
-
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
+import { useUserStore } from '@/store'
 
 uni.hideTabBar()
+
+const { safeAreaInsets } = uni.getSystemInfoSync()
+const userStore = useUserStore()
+
+const showLoginPage = ref(false)
 
 let myMap = null
 const mapReady = ref(false)
@@ -93,7 +107,7 @@ onBeforeUnmount(() => {
   removeMyMap()
 })
 
-provide('homeData', { getMyMap, mapReady })
+provide('homeData', { getMyMap, mapReady, showLoginPage, userStore })
 </script>
 
 <style lang="scss" scoped>

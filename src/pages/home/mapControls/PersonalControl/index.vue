@@ -37,10 +37,17 @@
 import { ref } from 'vue'
 import PersonalPage from '@/pages/personal/personal.vue'
 
+const { showLoginPage, userStore } = inject('homeData')
+
 const controlContainer = ref(null)
 const showPage = ref(false)
 
 function onClick() {
+  if (!userStore.isLogined) {
+    showLoginPage.value = true
+    return
+  }
+
   showPage.value = !showPage.value
 }
 

@@ -16,27 +16,19 @@
 </template>
 
 <script setup name="ScanControl">
+const { showLoginPage, userStore } = inject('homeData')
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
 function onClick() {
-  // 跳转页面
-  uni.navigateTo({
-    url: '/pages/redirectPage/redirectPage',
-  })
+  if (!userStore.isLogined) {
+    showLoginPage.value = true
+    return
+  }
 
-  // uni.scanCode({
-  //   // onlyFromCamera: true,
-  //   success: function (res) {
-  //     console.log('条码类型：' + res.scanType)
-  //     console.log('条码内容：' + res.result)
-  //   },
-  //   fail: (fail) => {
-  //     uni.showToast({
-  //       icon: 'none',
-  //       title: '请在相机中扫描',
-  //     })
-  //   },
-  // })
+  uni.showToast({
+    title: '功能开发中',
+    icon: 'none',
+  })
 }
 </script>
 
