@@ -82,5 +82,9 @@ defineExpose({ init })
   backdrop-filter: blur(4px);
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+  transition: all 0.1s linear;
+}
+.maplibregl-ctrl:active {
+  transform: scale(0.9);
 }
 </style>

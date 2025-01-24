@@ -55,6 +55,10 @@ function onClick() {
   backdrop-filter: blur(4px);
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  transition: all 0.1s linear;
   transform: translateX(-50%);
+}
+.maplibregl-ctrl:active {
+  transform: translateX(-50%) scale(0.9);
 }
 </style>

@@ -1,8 +1,6 @@
 import * as maplibregl from 'maplibre-gl'
 
 async function createCustomMarker(item, myMap) {
-  console.log('myMap - marker: %o', myMap)
-
   const el = document.createElement('div')
 
   const response = await fetch(item.icon)

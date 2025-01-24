@@ -16,27 +16,18 @@
 </template>
 
 <script setup name="ScanControl">
+import wx from 'weixin-js-sdk'
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
 function onClick() {
-  // 跳转页面
-  uni.navigateTo({
-    url: '/pages/redirectPage/redirectPage',
+  wx.scanQRCode({
+    needResult: 0, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+    scanType: ['qrCode', 'barCode'], // 可以指定扫二维码还是一维码，默认二者都有
+    success: function (res) {
+      const result = res.resultStr // 当needResult 为 1 时，扫码返回的结果
+      console.log('scanQRCode: ', result)
+    },
   })
-
-  // uni.scanCode({
-  //   // onlyFromCamera: true,
-  //   success: function (res) {
-  //     console.log('条码类型：' + res.scanType)
-  //     console.log('条码内容：' + res.result)
-  //   },
-  //   fail: (fail) => {
-  //     uni.showToast({
-  //       icon: 'none',
-  //       title: '请在相机中扫描',
-  //     })
-  //   },
-  // })
 }
 </script>
 
@@ -55,6 +46,10 @@ function onClick() {
   backdrop-filter: blur(4px);
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+  transition: all 0.1s linear;
   transform: translateX(-50%);
+}
+.maplibregl-ctrl:active {
+  transform: translateX(-50%) scale(0.9);
 }
 </style>

@@ -17,13 +17,14 @@ import { useUserStore } from '@/store'
 const userStore = useUserStore()
 
 const hasLogin = userStore.isLogined
+uni.switchTab({ url: '/pages/home/home' })
 setTimeout(() => {
   if (hasLogin) {
     console.log('跳转到首页')
-    uni.switchTab({ url: '/pages/home/home' })
+    // uni.switchTab({ url: '/pages/home/home' })
   } else {
     console.log('跳转到登录页')
-    uni.redirectTo({ url: '/pages/login/login' })
+    // uni.redirectTo({ url: '/pages/login/login' })
   }
 }, 1000)
 </script>
