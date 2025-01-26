@@ -15,6 +15,8 @@
       height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px)`,
     }"
   >
+    <wd-notify />
+
     <view id="mapContainer" class="w-full h-full"></view>
 
     <mapControls />
@@ -36,9 +38,11 @@ import wx from 'weixin-js-sdk'
 import { taskLngLats } from './mock/taskLngLats'
 import mapControls from './mapControls/mapControls.vue'
 import LoginPage from '@/pages/login/login.vue'
-import { initMap, createMarker } from '@/utils/maplibregl/index'
+import { initMap, createMarker, updateRedEnvelopes } from '@/utils/maplibregl/index'
 import { useUserStore } from '@/store'
 import { getTkCfg } from '@/service/login'
+import { createTimer } from '@/utils/timer'
+import parseParameters from './parseParameters'
 
 uni.hideTabBar()
 
@@ -46,6 +50,7 @@ const { VITE_WX_APPID } = import.meta.env
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const userStore = useUserStore()
 
+const myTimer = createTimer()
 const showLoginPage = ref(false)
 
 let myMap = null
@@ -87,28 +92,23 @@ initWXJSSDK()
 
 onShow(() => {
   const search = window.location.search
-  if (search) {
-    const params = new URLSearchParams(search)
-    const code = params.get('code')
-    userStore.setWXCode(code)
-
-    const fullUrl = window.location.href
-    const newUrl = fullUrl.replace(search, '')
-    window.history.replaceState({}, document.title, newUrl)
-
-    showLoginPage.value = true
-  }
+  search && parseParameters(search)
 })
 
 onMounted(() => {
   myMap = initMap('mapContainer')
   mapReady.value = true
 
+  myTimer.start()
+
+  updateRedEnvelopes()
+
   taskLngLats.forEach((item) => {
     createMarker(item)
   })
 })
 onBeforeUnmount(() => {
+  myTimer.stop()
   removeMyMap()
 })
 

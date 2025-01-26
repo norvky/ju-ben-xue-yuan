@@ -13,6 +13,7 @@
     <wd-form ref="form" :model="model">
       <wd-cell-group border>
         <wd-input
+          :disabled="loading"
           label="手机号"
           prop="phonenumber"
           v-model="model.phonenumber"
@@ -21,6 +22,7 @@
         />
         <!-- 验证码 -->
         <wd-input
+          :disabled="loading"
           label="验证码"
           prop="verificationCode"
           v-model="model.verificationCode"
@@ -44,26 +46,28 @@
       </wd-cell-group>
 
       <view class="pt-4 px-4">
-        <wd-button @click="handleSubmit" block>提 交</wd-button>
+        <wd-button :loading="loading" @click="handleSubmit" block>提 交</wd-button>
       </view>
     </wd-form>
   </view>
 </template>
 
 <script setup name="redirectPage">
-import { getCaptchaImage, login } from '@/service/login'
+import { getCaptchaImage } from '@/service/login'
+import { useLoginStore } from '@/store'
 
 const { showLoginPage, userStore } = inject('homeData')
 const { VITE_WX_APPID } = import.meta.env
 const { safeAreaInsets } = uni.getSystemInfoSync()
+const loginStore = useLoginStore()
 
 const form = ref()
 const model = reactive({
-  code: userStore.userInfo.code, // 微信 code
   phonenumber: '',
   verificationCode: '',
   uuid: '',
 })
+const loading = ref(false)
 
 // 验证码
 const verifyCode = ref('https://wot-design-uni.netlify.app/logo.png')
@@ -76,50 +80,31 @@ function getVerifyCode() {
 }
 
 function handleSubmit() {
+  loading.value = true
   form.value
     .validate()
-    .then(({ valid, errors }) => {
-      valid && handleLogin()
+    .then(({ valid }) => {
+      if (valid) {
+        loginStore.setLoginInfo(model)
+        // showLoginPage.value = false
+        getWXCode()
+      }
     })
     .catch((error) => {
       console.log(error, 'error')
     })
 }
 
-async function handleLogin() {
-  const { code, msg } = await login(model)
-  if (code !== 200) {
-    uni.showToast({
-      icon: 'none',
-      title: msg,
-    })
-    getVerifyCode()
-    return
-  }
-
-  // userStore.setUserInfo({
-  //   nickname: `剧中人${Date.now()}`,
-  //   avatar: 'https://img01.yzcdn.cn/vant/cat.jpeg',
-  //   phone: model.phonenumber,
-  //   token: 'token',
-  // })
-
-  showLoginPage.value = false
+function getWXCode() {
+  const url = window.location.href.replace(window.location.hash, '')
+  const redirectURI = encodeURIComponent(url)
+  const appid = VITE_WX_APPID
+  const scope = 'snsapi_userinfo' // 可选 snsapi_base snsapi_userinfo
+  const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirectURI}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
+  window.location.href = authUrl
 }
 
 getVerifyCode()
-
-onLoad(() => {
-  // 未授权
-  if (!model.code) {
-    const url = window.location.href.replace(window.location.hash, '')
-    const redirectURI = encodeURIComponent(url)
-    const appid = VITE_WX_APPID
-    const scope = 'snsapi_userinfo' // 可选 snsapi_base snsapi_userinfo
-    const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirectURI}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
-    window.location.href = authUrl
-  }
-})
 </script>
 
 <style lang="scss" scoped></style>

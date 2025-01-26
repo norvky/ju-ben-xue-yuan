@@ -26,7 +26,12 @@ type IUserInfo = {
   /** 微信的 openid，非微信没有这个字段 */
   openid?: string
   token?: string
-  code?: string
+}
+
+type ILoginInfo = {
+  phonenumber: string
+  verificationCode: string
+  uuid: string
 }
 
 enum TestEnum {

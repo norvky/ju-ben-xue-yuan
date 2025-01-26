@@ -1,6 +1,7 @@
 import * as maplibregl from 'maplibre-gl'
 import 'maplibre-gl/dist/maplibre-gl.css'
-import createCustomMarker from './createCustomMarker'
+import { createCustomMarker, createRedEnvelopeMarker } from './createCustomMarker'
+import { getQrCodeList } from '@/service/qrcode'
 
 let myMap = null
 let myLocationMarker = null
@@ -71,4 +72,17 @@ async function createMarker(item) {
   return marker
 }
 
-export { initMap, createMarker }
+function updateRedEnvelopes() {
+  getQrCodeList({}).then((res) => {
+    const { code, data } = res
+    if (code !== 200) {
+      return
+    }
+
+    data.forEach((item) => {
+      createRedEnvelopeMarker(item, myMap)
+    })
+  })
+}
+
+export { initMap, createMarker, updateRedEnvelopes }
