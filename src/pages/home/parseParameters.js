@@ -51,7 +51,7 @@ async function handleLogin(wxCode) {
   if (code !== 200) {
     showNotify({
       message: msg,
-      type: 'error',
+      type: 'danger',
     })
     return
   }
