@@ -34,6 +34,7 @@
 </template>
 
 <script setup name="Home">
+import { useNotify } from 'wot-design-uni'
 import wx from 'weixin-js-sdk'
 import { taskLngLats } from './mock/taskLngLats'
 import mapControls from './mapControls/mapControls.vue'
@@ -51,12 +52,23 @@ import parseParameters from './parseParameters'
 
 uni.hideTabBar()
 
+const { showNotify } = useNotify()
 const { VITE_WX_APPID } = import.meta.env
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const userStore = useUserStore()
 
 const myTimer = createTimer()
 const showLoginPage = ref(false)
+watch(
+  () => showLoginPage.value,
+  async (newValue) => {
+    newValue &&
+      showNotify({
+        message: '请先登录',
+        type: 'warning',
+      })
+  },
+)
 
 let myMap = null
 const mapReady = ref(false)
@@ -96,8 +108,9 @@ async function initWXJSSDK() {
 initWXJSSDK()
 
 onShow(() => {
-  const search = window.location.search
-  search && parseParameters(search)
+  const { search } = window.location
+  console.log('onShow - search: %o', search)
+  search && parseParameters(search, showLoginPage)
 })
 
 onMounted(() => {
