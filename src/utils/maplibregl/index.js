@@ -20,7 +20,7 @@ function initMap(options) {
           type: 'raster',
           tiles: [
             'https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
-            // 'https://webst01.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',
+            // 'https://webst01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
           ],
           tileSize: 256,
           attribution: '© <a href="https://www.amap.com/">高德地图</a>',

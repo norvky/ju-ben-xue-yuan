@@ -9,7 +9,7 @@
 
 <template>
   <view
-    class="relative bg-white overflow-hidden"
+    class="relative bg-white overflow-hidden dark-mode"
     :style="{
       marginTop: safeAreaInsets?.top + 'px',
       height: `calc(100vh - ${safeAreaInsets?.top}px - ${safeAreaInsets?.bottom}px)`,

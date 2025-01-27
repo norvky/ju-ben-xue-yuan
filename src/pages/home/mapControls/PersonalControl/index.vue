@@ -86,4 +86,7 @@ defineExpose({ init })
 .maplibregl-ctrl:active {
   transform: scale(0.9);
 }
+svg {
+  transform: scale(0.8);
+}
 </style>

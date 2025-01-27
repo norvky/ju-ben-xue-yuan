@@ -1,4 +1,15 @@
-/* 红包的波纹特效 */
+.dark-mode {
+  .maplibregl-canvas {
+    filter: invert(90%) hue-rotate(180deg) brightness(1);
+  }
+
+  .maplibregl-ctrl {
+    background-color: rgb(0 0 0 / 0.5) !important;
+    box-shadow: 0 0 5px rgb(255 255 255 / 30%) !important;
+  }
+}
+
+// 红包的波纹特效
 @keyframes ripple {
   0% {
     opacity: 1;
