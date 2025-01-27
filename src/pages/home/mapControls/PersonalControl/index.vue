@@ -29,7 +29,7 @@
       @click="showPage = false"
     />
 
-    <PersonalPage />
+    <PersonalPage style="height: 100%" />
   </view>
 </template>
 

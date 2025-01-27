@@ -1,0 +1,22 @@
+/* 红包的波纹特效 */
+@keyframes ripple {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+.red-envelope-ripple-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  width: 48px;
+  height: 48px;
+  border: 2px solid #ff0000;
+  border-radius: 50%;
+  animation: ripple 2s infinite;
+}

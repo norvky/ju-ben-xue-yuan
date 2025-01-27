@@ -99,7 +99,7 @@ function getWXCode() {
   const url = window.location.href.replace(window.location.hash, '')
   const redirectURI = encodeURIComponent(url)
   const appid = VITE_WX_APPID
-  const scope = 'snsapi_userinfo' // 可选 snsapi_base snsapi_userinfo
+  const scope = 'snsapi_base' // 可选 snsapi_base snsapi_userinfo
   const authUrl = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${redirectURI}&response_type=code&scope=${scope}&state=STATE#wechat_redirect`
   window.location.href = authUrl
 }

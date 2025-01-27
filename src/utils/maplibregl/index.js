@@ -5,10 +5,14 @@ import { getQrCodeList } from '@/service/qrcode'
 
 let myMap = null
 let myLocationMarker = null
+const redEnvelopeMarkers = []
+let redEnvelopesDataBak = ''
 
-function initMap(mapId) {
+function initMap(options) {
+  const { container, center } = options
+
   myMap = new maplibregl.Map({
-    container: mapId,
+    container,
     style: {
       version: 8,
       sources: {
@@ -16,6 +20,7 @@ function initMap(mapId) {
           type: 'raster',
           tiles: [
             'https://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+            // 'https://webst01.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',
           ],
           tileSize: 256,
           attribution: '© <a href="https://www.amap.com/">高德地图</a>',
@@ -31,8 +36,8 @@ function initMap(mapId) {
         },
       ],
     },
-    center: [108.38025476582408, 22.762367277980474],
-    zoom: 17,
+    center: center || [110.68212993376392, 22.331164026494434],
+    zoom: 15,
     attributionControl: false, // 禁用版权控件
   })
 
@@ -44,8 +49,7 @@ function initMap(mapId) {
   uni.getLocation({
     type: 'wgs84',
     success: function (res) {
-      // const lngLat = [res.longitude, res.latitude]
-      const lngLat = [108.38025476582408, 22.762367277980474]
+      const lngLat = [res.longitude, res.latitude]
       myLocationMarker.setLngLat(lngLat).addTo(myMap)
       myMap.setCenter(lngLat)
     },
@@ -58,7 +62,7 @@ async function createMarker(item) {
   let marker = null
 
   if ('icon' in item) {
-    marker = await createCustomMarker(item, myMap)
+    marker = createCustomMarker(item, myMap)
   } else {
     marker = new maplibregl.Marker({ color: 'red' })
       .setLngLat(item)
@@ -73,16 +77,43 @@ async function createMarker(item) {
 }
 
 function updateRedEnvelopes() {
-  getQrCodeList({}).then((res) => {
-    const { code, data } = res
-    if (code !== 200) {
-      return
-    }
+  return new Promise((resolve, reject) => {
+    getQrCodeList({}).then((res) => {
+      const { code, data } = res
+      if (code !== 200) {
+        reject(res)
+        return
+      }
 
-    data.forEach((item) => {
-      createRedEnvelopeMarker(item, myMap)
+      const dataStr = JSON.stringify(data)
+      if (dataStr === redEnvelopesDataBak) {
+        console.log('数据未变化')
+        resolve()
+        return
+      }
+
+      console.log('数据变化')
+      redEnvelopesDataBak = dataStr
+      redEnvelopeMarkers.forEach((marker) => {
+        marker.remove()
+      })
+      redEnvelopeMarkers.length = 0
+
+      data.forEach((item) => {
+        const _marker = createRedEnvelopeMarker(item, myMap)
+        redEnvelopeMarkers.push(_marker)
+      })
+      resolve()
     })
   })
 }
 
-export { initMap, createMarker, updateRedEnvelopes }
+function fitRedEnvelopes() {
+  const bounds = new maplibregl.LngLatBounds()
+  redEnvelopeMarkers.forEach((marker) => {
+    bounds.extend(marker.getLngLat())
+  })
+  myMap.fitBounds(bounds, { padding: 100, duration: 2000 })
+}
+
+export { initMap, createMarker, updateRedEnvelopes, fitRedEnvelopes }

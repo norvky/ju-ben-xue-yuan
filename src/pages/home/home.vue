@@ -38,7 +38,12 @@ import wx from 'weixin-js-sdk'
 import { taskLngLats } from './mock/taskLngLats'
 import mapControls from './mapControls/mapControls.vue'
 import LoginPage from '@/pages/login/login.vue'
-import { initMap, createMarker, updateRedEnvelopes } from '@/utils/maplibregl/index'
+import {
+  initMap,
+  createMarker,
+  updateRedEnvelopes,
+  fitRedEnvelopes,
+} from '@/utils/maplibregl/index'
 import { useUserStore } from '@/store'
 import { getTkCfg } from '@/service/login'
 import { createTimer } from '@/utils/timer'
@@ -96,16 +101,22 @@ onShow(() => {
 })
 
 onMounted(() => {
-  myMap = initMap('mapContainer')
+  myMap = initMap({
+    container: 'mapContainer',
+  })
   mapReady.value = true
 
-  myTimer.start()
-
-  updateRedEnvelopes()
-
-  taskLngLats.forEach((item) => {
-    createMarker(item)
+  updateRedEnvelopes().then(() => {
+    fitRedEnvelopes()
   })
+
+  myTimer.start(() => {
+    updateRedEnvelopes()
+  })
+
+  // taskLngLats.forEach((item) => {
+  //   createMarker(item)
+  // })
 })
 onBeforeUnmount(() => {
   myTimer.stop()

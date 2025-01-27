@@ -9,7 +9,7 @@
 
 <template>
   <view
-    class="bg-white overflow-hidden pt-2 px-4 min-h-screen"
+    class="bg-white overflow-auto pt-2 px-4 pb-8 h-full"
     :style="{ marginTop: safeAreaInsets?.top + 'px' }"
   >
     <view class="">
@@ -23,8 +23,8 @@
       <view class="b-rounded" style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #ccc">
         <view class="text-center text-xl">徽章展示</view>
 
-        <view class="mt-2 grid grid-cols-6 gap-2">
-          <view v-for="i in 15" :key="i" class="flex justify-center">
+        <view class="mt-2 grid grid-cols-3 gap-2">
+          <view v-for="i in 12" :key="i" class="flex justify-center">
             <wd-img :width="50" :height="50" round :src="logo" />
           </view>
         </view>
@@ -41,7 +41,7 @@
       </view>
     </view>
 
-    <view class="mt-4 p-2 flex justify-center">
+    <view class="mt-4 p-2 mb-8 flex justify-center">
       <wd-button type="error" @click="loginOut">退出登录</wd-button>
     </view>
   </view>

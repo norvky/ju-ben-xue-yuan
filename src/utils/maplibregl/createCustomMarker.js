@@ -1,46 +1,60 @@
 import * as maplibregl from 'maplibre-gl'
+import redEnvelopeSvg from '@/static/images/map/red-envelope.svg'
 
-export async function createCustomMarker(item, myMap) {
+const baseURL = import.meta.env.VITE_SERVER_BASEURL
+
+export function createCustomMarker(item, myMap) {
   const el = document.createElement('div')
 
-  const response = await fetch(item.icon)
-  const svgContent = await response.text()
+  const fn = async () => {
+    const response = await fetch(item.icon)
+    const svgContent = await response.text()
+    el.innerHTML = svgContent
 
-  // 插入到 div 中
-  el.innerHTML = svgContent
-
-  // 获取 SVG 元素
-  const svgElement = el.querySelector('svg')
-  if (svgElement) {
-    svgElement.style.width = `${item.iconSize[0]}px`
-    svgElement.style.height = `${item.iconSize[1]}px`
+    const svgElement = el.querySelector('svg')
+    if (svgElement) {
+      svgElement.style.width = `${item.iconSize[0]}px`
+      svgElement.style.height = `${item.iconSize[1]}px`
+    }
   }
+  fn()
 
   return new maplibregl.Marker({ element: el }).setLngLat([item.lng, item.lat]).addTo(myMap)
 }
 
-export async function createRedEnvelopeMarker(item, myMap) {
-  const el = document.createElement('div')
-  const url = import.meta.env.VITE_APP_BASE_URL + item.qrCodeIcon
-  const response = await fetch(url)
-  const svgContent = await response.text()
+export function createRedEnvelopeMarker(item, myMap) {
+  const redEnvelopeContainer = document.createElement('div')
+  redEnvelopeContainer.className = 'red-envelope-container'
 
-  // 插入到 div 中
-  el.innerHTML = svgContent
-
-  // 获取 SVG 元素
-  const svgElement = el.querySelector('svg')
-  if (svgElement) {
-    svgElement.style.width = `${item.iconSize[0] || 32}px`
-    svgElement.style.height = `${item.iconSize[1] || 32}px`
+  const img = new Image()
+  img.src = baseURL + item.qrCodeIcon
+  img.width = item.iconSize?.[0] || 48
+  img.height = item.iconSize?.[1] || 48
+  img.onerror = () => {
+    console.log('图片加载失败')
+    // img.src = 'https://maplibre.org/maplibre-gl-js/docs/assets/logo.svg'
+    img.src = redEnvelopeSvg
   }
+
+  // 添加波纹
+  const rippleEffect = document.createElement('div')
+  rippleEffect.className = 'red-envelope-ripple-effect'
+
+  redEnvelopeContainer.appendChild(rippleEffect)
+  redEnvelopeContainer.appendChild(img)
 
   // latLonInfo: "110.680862,22.333145"
   const lngLat = item.latLonInfo.split(',').map(parseFloat)
-  // setTimeout(() => {
-  //   console.log('el: %o', el)
-  //   myMap.flyTo({ center: lngLat })
-  // }, 3000)
+  const popup = new maplibregl.Popup({ offset: 25 }).setText(item.qrCodeName)
+  // .setHTML(`
+  //   <view class="flex flex-col items-center">
+  //     <image src="${baseURL + item.qrCodeIcon}" mode="widthFix" />
+  //     <text class="text-xs text-gray-500">${item.redEnvelopeName}</text>
+  //   </view>
+  // `)
 
-  return new maplibregl.Marker({ color: 'red' }).setLngLat(lngLat).addTo(myMap)
+  return new maplibregl.Marker({ element: redEnvelopeContainer })
+    .setLngLat(lngLat)
+    .setPopup(popup)
+    .addTo(myMap)
 }
