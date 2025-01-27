@@ -16,20 +16,12 @@
       right: '0',
       bottom: '0',
       opacity: showPage ? 1 : 0,
-      transform: showPage ? 'scale(1)' : 'scale(0)',
-      transformOrigin: 'calc(100% - 34px) 34px',
+      transform: showPage ? 'scale(1)' : 'scale(0.5)',
       transition: 'all 0.3s',
       zIndex: showPage ? 99 : -1,
     }"
   >
-    <wd-button
-      class="!absolute right-2 top-2 z-1 !bg-#7F776D !text-#3C1E1C"
-      type="icon"
-      icon="close"
-      @click="showPage = false"
-    />
-
-    <PersonalPage style="height: 100%" />
+    <PersonalPage :goToHomeFn="() => (showPage = false)" style="height: 100%" />
   </view>
 </template>
 

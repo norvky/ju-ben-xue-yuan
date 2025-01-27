@@ -95,12 +95,14 @@ async function initWXJSSDK() {
     return
   }
 
+  const devEnv = false
+
   wx.config({
     debug: false,
     appId: VITE_WX_APPID,
-    nonceStr: data.nonceStr,
-    timestamp: data.timestamp,
-    signature: data.signature,
+    nonceStr: devEnv ? 'Wm3WZYTPz0wzacny' : data.nonceStr,
+    timestamp: devEnv ? '1737974766' : data.timestamp,
+    signature: devEnv ? '54acdb437ffc2f7c5e822058712b43dd81582f06' : data.signature,
     jsApiList: ['getLocation', 'scanQRCode'],
   })
 }

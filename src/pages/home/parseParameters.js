@@ -45,6 +45,7 @@ async function handleLogin(wxCode) {
   const { code, msg, data } = await login({
     ...loginStore.loginInfo,
     code: wxCode,
+    // devEnv: true,
   })
 
   if (code !== 200) {

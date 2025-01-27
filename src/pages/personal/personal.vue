@@ -2,6 +2,7 @@
 {
   layout: 'default',
   style: {
+    navigationStyle: 'custom',
     navigationBarTitleText: '个人中心',
   },
 }
@@ -9,16 +10,32 @@
 
 <template>
   <view
-    class="bg-white overflow-auto pt-2 px-4 pb-8 h-full"
+    class="relative bg-#f6f6f7 overflow-auto h-full"
     :style="{ marginTop: safeAreaInsets?.top + 'px' }"
   >
+    <wd-button
+      class="!absolute left-2 top-2 z-1 !text-#3C1E1C"
+      style="border: 1px solid #e6e6e7"
+      type="icon"
+      icon="home"
+      @click="goToHome"
+    />
+
     <view class="">
-      <view class="center">
-        <wd-img :width="100" :height="100" round :src="avatarImg" />
+      <view class="center bg-#fff mb-4 p-6 pt-10">
+        <wd-img
+          :width="100"
+          :height="100"
+          round
+          :src="avatarImg"
+          style="box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2)"
+        />
       </view>
 
-      <view>名称：{{ userStore?.userInfo?.nickname || '-' }}</view>
-      <view>手机号：{{ userStore?.userInfo?.phone || '-' }}</view>
+      <wd-cell-group border>
+        <wd-cell title="昵称" :value="userStore?.userInfo?.nickname || '-'" />
+        <wd-cell title="手机号" :value="userStore?.userInfo?.phone || '-'" />
+      </wd-cell-group>
 
       <view class="b-rounded" style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #ccc">
         <view class="text-center text-xl">徽章展示</view>
@@ -55,9 +72,18 @@ import logo from '@/static/logo.jpg'
 const { safeAreaInsets } = uni.getSystemInfoSync()
 const userStore = useUserStore()
 
+const props = defineProps({
+  goToHomeFn: null,
+})
+
 const avatarImg = computed(() => {
   return userStore?.userInfo?.avatar || logo
 })
+
+function goToHome() {
+  // uni.switchTab({ url: '/pages/home/home' })
+  props.goToHomeFn && props.goToHomeFn()
+}
 
 function loginOut() {
   userStore.reset()
@@ -67,6 +93,8 @@ function loginOut() {
     title: '退出登录成功',
     icon: 'success',
   })
+
+  goToHome()
 }
 </script>
 
