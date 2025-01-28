@@ -41,7 +41,7 @@ import mapControls from './mapControls/mapControls.vue'
 import LoginPage from '@/pages/login/login.vue'
 import {
   initMap,
-  createMarker,
+  updateMyLocation,
   updateRedEnvelopes,
   fitRedEnvelopes,
 } from '@/utils/maplibregl/index'
@@ -84,6 +84,14 @@ const wxIsReady = ref(false)
 wx.ready(() => {
   wxIsReady.value = true
   console.log('Weixin JS SDK Ready')
+
+  // TODO: 持续获取地理位置
+  wx.getLocation({
+    type: 'wgs84',
+    success: (res) => {
+      updateMyLocation(res)
+    },
+  })
 })
 wx.error((res) => {
   console.error('Weixin JS SDK Error: %o', res)
@@ -95,14 +103,14 @@ async function initWXJSSDK() {
     return
   }
 
-  const devEnv = false
+  const devEnv = import.meta.env.DEV
 
   wx.config({
     debug: false,
     appId: VITE_WX_APPID,
     nonceStr: devEnv ? 'Wm3WZYTPz0wzacny' : data.nonceStr,
-    timestamp: devEnv ? '1737974766' : data.timestamp,
-    signature: devEnv ? '54acdb437ffc2f7c5e822058712b43dd81582f06' : data.signature,
+    timestamp: devEnv ? '1738047833' : data.timestamp,
+    signature: devEnv ? 'cb8ff4b3defeecabaa38a8f3b6f581bfaccac49f' : data.signature,
     jsApiList: ['getLocation', 'scanQRCode'],
   })
 }

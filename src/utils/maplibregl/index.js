@@ -45,16 +45,6 @@ function initMap(options) {
     console.log('myMap clicked:', res.lngLat)
   })
 
-  myLocationMarker = new maplibregl.Marker()
-  uni.getLocation({
-    type: 'wgs84',
-    success: function (res) {
-      const lngLat = [res.longitude, res.latitude]
-      myLocationMarker.setLngLat(lngLat).addTo(myMap)
-      myMap.setCenter(lngLat)
-    },
-  })
-
   return myMap
 }
 
@@ -74,6 +64,18 @@ async function createMarker(item) {
   markerElement.style.cursor = 'pointer'
 
   return marker
+}
+
+function updateMyLocation(params) {
+  console.log('params: %o', params)
+  const lngLat = [params.longitude, params.latitude]
+  if (myLocationMarker) {
+    myLocationMarker.setLngLat(lngLat)
+  } else {
+    myLocationMarker = new maplibregl.Marker()
+    myLocationMarker.setLngLat(lngLat).addTo(myMap)
+    // myMap.setCenter(lngLat)
+  }
 }
 
 function updateRedEnvelopes() {
@@ -116,4 +118,4 @@ function fitRedEnvelopes() {
   myMap.fitBounds(bounds, { padding: 100, duration: 2000 })
 }
 
-export { initMap, createMarker, updateRedEnvelopes, fitRedEnvelopes }
+export { initMap, createMarker, updateMyLocation, updateRedEnvelopes, fitRedEnvelopes }
