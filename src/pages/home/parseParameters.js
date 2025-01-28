@@ -45,7 +45,7 @@ async function handleLogin(wxCode) {
   const { code, msg, data } = await login({
     ...loginStore.loginInfo,
     code: wxCode,
-    // devEnv: true,
+    devEnv: import.meta.env.DEV,
   })
 
   if (code !== 200) {
@@ -58,7 +58,7 @@ async function handleLogin(wxCode) {
 
   const { token } = data
   const userStore = useUserStore()
-  userStore.setUserInfo({ token })
+  userStore.setUserToken(token)
 
   showNotify({
     message: '登录成功',

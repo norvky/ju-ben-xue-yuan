@@ -46,7 +46,7 @@ import {
   fitRedEnvelopes,
 } from '@/utils/maplibregl/index'
 import { useUserStore } from '@/store'
-import { getTkCfg } from '@/service/login'
+import { getTkCfg, getInfo } from '@/service/login'
 import { createTimer } from '@/utils/timer'
 import parseParameters from './parseParameters'
 
@@ -128,6 +128,29 @@ onMounted(() => {
   myTimer.start(() => {
     updateRedEnvelopes()
   })
+
+  if (userStore.isLogined) {
+    getInfo().then((res) => {
+      const { code, data, msg } = res
+      if (code === 401) {
+        userStore.clearUserInfo()
+        showNotify({
+          message: '登录已过期，请重新登录',
+          type: 'warning',
+        })
+        // showLoginPage.value = true
+        return
+      } else if (code !== 200) {
+        showNotify({
+          message: msg,
+          type: 'danger',
+        })
+        return
+      }
+
+      userStore.setUserInfo(data)
+    })
+  }
 
   // taskLngLats.forEach((item) => {
   //   createMarker(item)

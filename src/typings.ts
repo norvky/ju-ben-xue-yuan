@@ -20,9 +20,9 @@ type IUniUploadFileOptions = {
 }
 
 type IUserInfo = {
-  nickname?: string
+  nickName?: string
   avatar?: string
-  phone?: string
+  phonenumber?: string
   /** 微信的 openid，非微信没有这个字段 */
   openid?: string
   token?: string

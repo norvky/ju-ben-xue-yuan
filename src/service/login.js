@@ -9,6 +9,11 @@ export function login(data) {
   return http.post('/api/core/public/login', data)
 }
 
+// 获取用户信息
+export function getInfo() {
+  return http.get('/api/core/getInfo', {})
+}
+
 // 获取JSAPI签名信息
 export function getTkCfg(data) {
   return http.post('/api/biz/tx/gzh/public/getTkCfg', data)

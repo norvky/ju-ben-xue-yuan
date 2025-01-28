@@ -33,8 +33,8 @@
       </view>
 
       <wd-cell-group border>
-        <wd-cell title="昵称" :value="userStore?.userInfo?.nickname || '-'" />
-        <wd-cell title="手机号" :value="userStore?.userInfo?.phone || '-'" />
+        <wd-cell title="昵称" :value="userStore?.userInfo?.nickName || '-'" />
+        <wd-cell title="手机号" :value="userStore?.userInfo?.phonenumber || '-'" />
       </wd-cell-group>
 
       <view class="b-rounded" style="padding: 0.5rem; margin-top: 1rem; border: 1px solid #ccc">

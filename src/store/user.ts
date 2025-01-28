@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 const initState = {
-  nickname: '',
+  nickName: '',
   avatar: '',
   token: '',
 }
@@ -13,7 +13,16 @@ export const useUserStore = defineStore(
     const userInfo = ref<IUserInfo>({ ...initState })
 
     const setUserInfo = (val: IUserInfo) => {
-      userInfo.value = val
+      const { token } = val
+
+      userInfo.value = {
+        ...val,
+        token: token || userInfo.value.token,
+      }
+    }
+
+    const setUserToken = (val: string) => {
+      userInfo.value.token = val
     }
 
     const clearUserInfo = () => {
@@ -28,6 +37,7 @@ export const useUserStore = defineStore(
     return {
       userInfo,
       setUserInfo,
+      setUserToken,
       clearUserInfo,
       isLogined,
       reset,
