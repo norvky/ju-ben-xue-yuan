@@ -29,8 +29,9 @@
           placeholder="请输入验证码"
           :rules="[{ required: true, message: '请填写验证码' }]"
         />
-        <view class="flex justify-center h-16" @click="getVerifyCode">
-          <wd-img height="4rem" mode="heightFix" :src="verifyCode">
+        <view class="h-4rem flex justify-center items-center" @click="getCaptcha">
+          <wd-loading v-if="loadingCaptcha" />
+          <wd-img v-else height="4rem" mode="heightFix" :src="captchaSrc">
             <template #error>
               <view class="px-2 w-full h-full flex justify-center items-center bg-#eee">
                 加载失败，请点击刷新
@@ -70,13 +71,22 @@ const model = reactive({
 const loading = ref(false)
 
 // 验证码
-const verifyCode = ref('https://wot-design-uni.netlify.app/logo.png')
-function getVerifyCode() {
-  getCaptchaImage().then((res) => {
-    const { img, uuid } = res
-    verifyCode.value = `data:image/png;base64,${img}`
-    model.uuid = uuid
-  })
+const captchaSrc = ref('')
+const loadingCaptcha = ref(false)
+function getCaptcha() {
+  loadingCaptcha.value = true
+  getCaptchaImage()
+    .then((res) => {
+      const { img, uuid } = res
+      captchaSrc.value = `data:image/png;base64,${img}`
+      model.uuid = uuid
+    })
+    .catch(() => {
+      captchaSrc.value = 'error'
+    })
+    .finally(() => {
+      loadingCaptcha.value = false
+    })
 }
 
 function handleSubmit() {
@@ -104,7 +114,7 @@ function getWXCode() {
   window.location.href = authUrl
 }
 
-getVerifyCode()
+getCaptcha()
 </script>
 
 <style lang="scss" scoped></style>
